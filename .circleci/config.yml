@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  install_dependenci1es:
+  install_dependencies:
     docker:
       - image: circleci/node:latest
     steps:
