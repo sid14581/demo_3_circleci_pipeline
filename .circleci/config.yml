@@ -50,6 +50,36 @@ jobs:
             docker pull aquasec/trivy:latest
             docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest --severity HIGH,CRITICAL image $DOCKERHUB_USERNAME/circlecipipelinenpm:1.0
         
+  deploy_to_eks_cluster:
+    docker:
+      - image: cimg/python:3.10.2
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Install kubectl
+          command: |
+            curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
+      - run:
+          name: Install AWS CLI
+          command: |
+            pip3 install awscli --upgrade
+            aws --version
+      - run:
+          name: Update Kubeconfig for EKS Cluster
+          command: |
+            aws eks update-kubeconfig --name iquant-eks-cluster --region $AWS_REGION
+      - run:
+          name: Deploy to Kubernetes
+          command: |
+            kubectl apply -f k8s-manifests/deployment.yaml
+            kubectl apply -f k8s-manifests/service.yaml
+      - run:
+          name: Verify Deployment
+          command: |
+            kubectl rollout status deployment/iquant-app-deployment -n default
 
 workflows:
   version: 2
@@ -62,5 +92,6 @@ workflows:
       - build_scan_push_docker_image:
           requires:
             - sonarCloudAnalysis
+      - deploy_to_eks_cluster
 
       
