@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: iquant-app
-        image: iquantc/circlecicd01:latest 
+        image: sid716/circlecipipelinenpm:2.0 
         ports:
         - containerPort: 3000
 

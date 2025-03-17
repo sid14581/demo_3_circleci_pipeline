@@ -70,7 +70,7 @@ jobs:
       - run:
           name: Update Kubeconfig for EKS Cluster
           command: |
-            aws eks update-kubeconfig --name iquant-eks-cluster --region us-east-2
+            aws eks update-kubeconfig --name circleci-cluster --region us-east-2
       - run:
           name: Deploy to Kubernetes
           command: |
