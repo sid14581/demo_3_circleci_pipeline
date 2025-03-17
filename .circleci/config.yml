@@ -70,6 +70,7 @@ jobs:
       - run:
           name: Update Kubeconfig for EKS Cluster
           command: |
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY && aws configure set aws_secret_access_key $AWS_SECRET_KEY && aws configure set default.region us-east-2
             aws eks update-kubeconfig --name circleci-cluster --region us-east-2
       - run:
           name: Deploy to Kubernetes
